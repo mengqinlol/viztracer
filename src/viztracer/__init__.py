@@ -6,7 +6,7 @@ __version__ = "1.0.0"
 
 from .cellmagic import load_ipython_extension
 from .decorator import ignore_function, log_sparse, trace_and_save
-from .viztracer import VizTracer, get_tracer
+from .viztracer import VizTracer, get_tracer, trace
 
 __all__ = [
     "__version__",
@@ -16,4 +16,5 @@ __all__ = [
     "log_sparse",
     "get_tracer",
     "load_ipython_extension",
+    "trace",
 ]
