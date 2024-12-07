@@ -2,6 +2,7 @@
 # For details: https://github.com/gaogaotiantian/viztracer/blob/master/NOTICE.txt
 
 import builtins
+import functools
 import gc
 import io
 import multiprocessing
@@ -470,3 +471,26 @@ class VizTracer(Tracer):
 
 def get_tracer() -> Optional[VizTracer]:
     return builtins.__dict__.get("__viz_tracer__", None)
+
+
+class trace:
+    def __init__(self, output_file: Optional[str] = None,
+                 file_info: Optional[bool] = None,
+                 verbose: Optional[int] = None):
+        self.saving_kwargs = {
+            "output_file": output_file,
+            "file_info": file_info,
+            "verbose": verbose,
+        }
+
+    def __call__(self, func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            tracer = get_tracer()
+            if tracer:
+                tracer.start()
+                res = func(*args, **kwargs)
+                tracer.stop()
+                tracer.save(**self.saving_kwargs)
+            return res
+        return wrapper
